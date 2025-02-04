@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the Number</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        #game-container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        input[type="number"] {
+            width: 60%;
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        button {
+            background-color: #007BFF;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #feedback {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        #history {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <h1>Adivina el Número</h1>
+        <p>Estoy pensando en un número entre 1 y 100. ¿Puedes adivinar cuál es?</p>
+        <input type="number" id="guess" placeholder="Ingresa un número" min="1" max="100">
+        <button onclick="makeGuess()">Adivinar</button>
+        <button onclick="resetGame()">Reiniciar Juego</button>
+        <div id="feedback"></div>
+        <div id="history"></div>
+    </div>
+
+    <script>
+        let randomNumber = Math.floor(Math.random() * 100) + 1;
+        let attempts = 10;
+        let history = [];
+
+        function makeGuess() {
+            const guessInput = document.getElementById('guess');
+            const feedback = document.getElementById('feedback');
+            const historyDiv = document.getElementById('history');
+
+            const userGuess = parseInt(guessInput.value);
+            
+            if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
+                feedback.textContent = 'Por favor, Ingresa un número válido entre 1 y 100.';
+                return;
+            }
+
+            history.push(userGuess);
+            historyDiv.textContent = `Intentos: ${history.join(', ')}`;
+
+            attempts--;
+
+            if (userGuess === randomNumber) {
+                feedback.textContent = `Felicidades! Adivinaste el número ${randomNumber} Correctamente!`;
+                disableInputs();
+            } else if (attempts === 0) {
+                feedback.textContent = `Fin del juego! El número era ${randomNumber}.`;
+                disableInputs();
+            } else {
+                feedback.textContent = `Respuesta equivocada! tu número es muy ${userGuess < randomNumber ? 'bajo' : 'alto'}. Intentos restantes: ${attempts}.`;
+            }
+
+            guessInput.value = '';
+            guessInput.focus();
+        }
+
+        function disableInputs() {
+            document.getElementById('guess').disabled = true;
+        }
+
+        function resetGame() {
+            randomNumber = Math.floor(Math.random() * 100) + 1;
+            attempts = 10;
+            history = [];
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('history').textContent = '';
+            document.getElementById('guess').disabled = false;
+            document.getElementById('guess').value = '';
+            document.getElementById('guess').focus();
+        }
+    </script>
+</body>
+</html>
